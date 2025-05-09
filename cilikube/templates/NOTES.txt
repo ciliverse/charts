@@ -1,0 +1,21 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Your release is named {{ .Release.Name }}.
+
+To access the frontend application:
+{{- if eq .Values.frontend.service.type "NodePort" }}
+  Use the NodePort service at port {{ .Values.frontend.service.nodePort | default "random (30000-32767)" }}.
+  Run the following command to find the allocated port:
+    kubectl get svc {{ include "cilikube.fullname" . }}-frontend -o=jsonpath='{.spec.ports[0].nodePort}'
+  Then access the application at:
+    http://<Node-IP>:{{ .Values.frontend.service.nodePort | default "<allocated-port>" }}
+{{- end }}
+
+To access the backend application:
+  The backend is exposed internally via ClusterIP at:
+    {{ include "cilikube.fullname" . }}-backend:{{ .Values.backend.service.port }}
+
+For more details, check the Kubernetes resources:
+  kubectl get all -l app.kubernetes.io/name={{ include "cilikube.name" . }}
+
+Enjoy using your application!
