@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ciliverse Helm Charts Repository</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Source Code Pro', monospace, system-ui;
+            background: #0a0a0a;
+            color: #00ff00;
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+            scroll-behavior: smooth;
+            will-change: scroll-position;
+        }
+        canvas#matrix {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            opacity: 0.2;
+            display: none;
+        }
+        canvas#matrix.active {
+            display: block;
+        }
+        .grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(0, 255, 0, 0.1) 1px,
+                transparent 1px
+            ),
+            linear-gradient(
+                to right,
+                rgba(0, 255, 0, 0.1) 1px,
+                transparent 1px
+            );
+            background-size: 20px 20px;
+            z-index: -1;
+            animation: gridMove 20s linear infinite;
+            will-change: background-position;
+        }
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 20px 20px; }
+        }
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(0, 255, 0, 0.3);
+            animation: scan 5s linear infinite;
+            z-index: 10;
+            will-change: top;
+        }
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        .banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            color: #00ff00;
+            padding: 0.8rem 1rem;
+            border-bottom: 2px solid #00ff00;
+            z-index: 110;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            transition: transform 0.3s ease;
+        }
+        .banner.hidden {
+            transform: translateY(-100%);
+        }
+        .banner p {
+            margin: 0;
+            color: #00cc00;
+        }
+        .banner a {
+            color: #00ffcc;
+            text-decoration: none;
+        }
+        .banner a:hover {
+            color: #00ff00;
+            text-decoration: underline;
+        }
+        .banner .close-btn {
+            background: none;
+            border: none;
+            color: #00ff00;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0 0.5rem;
+            transition: color 0.2s ease;
+        }
+        .banner .close-btn:hover {
+            color: #00ffcc;
+        }
+        header {
+            background: rgba(0, 0, 0, 0.9);
+            text-align: center;
+            padding: 2rem 1rem;
+            border-bottom: 2px solid #00ff00;
+            position: relative;
+            z-index: 5;
+        }
+        header.with-banner {
+            margin-top: 3rem;
+        }
+        header h1 {
+            font-size: 2.5rem;
+            color: #00ff00;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            display: inline-block;
+            border-right: 2px solid #00ff00;
+            animation: blink 0.7s step-end infinite;
+        }
+        header p {
+            font-size: 1.1rem;
+            color: #00cc00;
+            margin-top: 0.5rem;
+        }
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 5;
+        }
+        .terminal {
+            background: #1a1a1a;
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+            transition: box-shadow 0.2s ease, transform 0.2s ease;
+        }
+        .terminal:hover {
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.5);
+            transform: translateY(-3px);
+        }
+        .terminal::before {
+            content: '>_';
+            color: #00ff00;
+            position: absolute;
+            left: 1rem;
+            top: 1rem;
+            animation: blink 0.7s step-end infinite;
+        }
+        .terminal::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 10px;
+            background: radial-gradient(circle, rgba(0, 255, 0, 0.2) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            z-index: -1;
+        }
+        .terminal:hover::after {
+            opacity: 1;
+        }
+        h2 {
+            font-size: 1.6rem;
+            color: #00ff00;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+        p {
+            font-size: 1rem;
+            color: #00cc00;
+            margin-bottom: 1rem;
+        }
+        pre {
+            background: #0a0a0a;
+            color: #00ff00;
+            padding: 1.5rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+            border-left: 4px solid #00ff00;
+            position: relative;
+        }
+        pre::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0, 255, 0, 0.1), transparent);
+            animation: codeGlow 2s ease-in-out infinite;
+        }
+        @keyframes codeGlow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        code {
+            color: #00ff00;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            font-size: 1rem;
+            margin: 0.5rem 0;
+            color: #00cc00;
+        }
+        a {
+            color: #00ffcc;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        a:hover {
+            color: #00ff00;
+            text-decoration: underline;
+        }
+        .lang-toggle {
+            position: fixed;
+            top: 6rem;
+            right: 1rem;
+            background: #1a1a1a;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            transition: box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+            touch-action: manipulation;
+            user-select: none;
+            z-index: 100;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .lang-toggle:hover, .lang-toggle:active {
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+            background: #00ff00;
+            color: #0a0a0a;
+        }
+        .en, .zh {
+            display: none;
+            transition: opacity 0.3s ease;
+        }
+        .en.active, .zh.active {
+            display: block;
+            opacity: 1;
+        }
+        footer {
+            text-align: center;
+            padding: 1rem 0;
+            background: rgba(0, 0, 0, 0.9);
+            color: #00cc00;
+            border-top: 2px solid #00ff00;
+            margin-top: 2rem;
+            position: relative;
+            z-index: 5;
+        }
+        .star {
+            color: #ffcc00;
+            font-size: 1.2rem;
+        }
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        @media (max-width: 600px) {
+            .banner {
+                font-size: 0.8rem;
+                padding: 0.6rem 0.8rem;
+            }
+            .banner .close-btn {
+                font-size: 0.9rem;
+            }
+            header {
+                padding: 1.5rem 0.8rem;
+            }
+            header.with-banner {
+                margin-top: 2.5rem;
+            }
+            header h1 {
+                font-size: 1.8rem;
+            }
+            header p {
+                font-size: 0.9rem;
+            }
+            .container {
+                margin: 1rem;
+                padding: 0 1rem;
+            }
+            .terminal {
+                padding: 1.2rem;
+            }
+            h2 {
+                font-size: 1.3rem;
+            }
+            p {
+                font-size: 0.9rem;
+            }
+            pre {
+                font-size: 0.8rem;
+                padding: 1rem;
+            }
+            li {
+                font-size: 0.9rem;
+            }
+            .lang-toggle {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+                top: 0.5rem;
+                right: 0.5rem;
+                min-width: 44px;
+                min-height: 44px;
+            }
+            .grid {
+                background-size: 15px 15px;
+            }
+        }
+        @media (max-width: 400px) {
+            .banner {
+                font-size: 0.7rem;
+                padding: 0.5rem 0.6rem;
+            }
+            .banner .close-btn {
+                font-size: 0.8rem;
+            }
+            header {
+                padding: 1.2rem 0.6rem;
+            }
+            header.with-banner {
+                margin-top: 2rem;
+            }
+            header h1 {
+                font-size: 1.5rem;
+            }
+            header p {
+                font-size: 0.8rem;
+            }
+            .terminal {
+                padding: 1rem;
+            }
+            h2 {
+                font-size: 1.2rem;
+            }
+            p {
+                font-size: 0.85rem;
+            }
+            pre {
+                font-size: 0.75rem;
+            }
+            .lang-toggle {
+                font-size: 0.7rem;
+                padding: 0.3rem 0.6rem;
+                top: 0.5rem;
+                right: 0.5rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap" media="print" onload="this.media='all'">
+</head>
+<body>
+    <div class="banner" id="banner">
+        <p class="en active">
+            🔔 Latest Update: CILIKUBE v0.1.1 Released 🎉 Thanks to all contributors for their amazing work in just a few days! Details: <a href="https://github.com/ciliverse/cilikube/releases/tag/v0.1.1">v0.1.1 Release</a>
+        </p>
+        <p class="zh">
+            🔔 最新动态：CILIKUBE v0.1.1 版本发布 🎉 感谢各位小伙伴的贡献，短短几天贡献很多！详情： <a href="https://github.com/ciliverse/cilikube/releases/tag/v0.1.1">v0.1.1 版本</a>
+        </p>
+        <button class="close-btn" onclick="closeBanner()">×</button>
+    </div>
+    <canvas id="matrix"></canvas>
+    <div class="grid"></div>
+    <div class="scanline"></div>
+    <button class="lang-toggle" onclick="toggleLanguage()">切换语言 / Toggle Language</button>
+    <header id="header">
+        <h1>Ciliverse Helm Charts</h1>
+        <p>Access Denied? Deploy with Power.</p>
+    </header>
+    <div class="container">
+        <div class="terminal">
+            <div class="en active">
+                <h2>System Access: Ciliverse Charts</h2>
+                <p>
+                    Welcome to the Ciliverse Helm Charts Repository, a secure node for deploying cutting-edge applications on Kubernetes.
+                    The <strong>cilikube</strong> Chart is your key to unlocking rapid deployment.
+                </p>
+                <h3>📌 Core Project Links</h3>
+                <ul>
+                    <li>Backend: <a href="https://github.com/ciliverse/cilikube">github.com/ciliverse/cilikube</a></li>
+                    <li>Frontend: <a href="https://github.com/cilliantech/cilikube-web">github.com/cilliantech/cilikube-web</a></li>
+                    <li>Documentation: <a href="https://cilikube.cillian.website/zh/">cilikube.cillian.website/zh/</a></li>
+                    <li>Docs Repo: <a href="https://github.com/ciliverse/cilikube-docs">github.com/ciliverse/cilikube-docs</a> (Contributions Welcome!)</li>
+                </ul>
+            </div>
+            <div class="zh">
+                <h2>系统访问：希里安 Charts</h2>
+                <p>
+                    欢迎访问希里安的 Helm Charts 仓库，这是一个用于在 Kubernetes 上部署各类应用的 chart 仓库。
+                    <strong>cilikube</strong> Chart 是您实现快速部署的关键。
+                </p>
+                <h3>📌 项目核心地址</h3>
+                <ul>
+                    <li>后端： <a href="https://github.com/ciliverse/cilikube">github.com/ciliverse/cilikube</a></li>
+                    <li>前端： <a href="https://github.com/cilliantech/cilikube-web">github.com/cilliantech/cilikube-web</a></li>
+                    <li>文档： <a href="https://cilikube.cillian.website/zh/">cilikube.cillian.website/zh/</a></li>
+                    <li>文档仓库： <a href="https://github.com/ciliverse/cilikube-docs">github.com/ciliverse/cilikube-docs</a>（欢迎贡献完善！）</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="terminal">
+            <div class="en active">
+                <h2>Execute: Install cilikube Chart</h2>
+                <p>
+                    Run the following commands to infiltrate the system and deploy the <code>cilikube</code> Chart:
+                </p>
+                <pre><code># Add the Ciliverse Charts repository
+helm repo add ciliverse https://charts.cillian.website
+
+# Update your Helm repositories
+helm repo update
+
+# Install the cilikube Chart
+helm install cilikube ciliverse/cilikube --namespace cilikube --create-namespace
+                </code></pre>
+            </div>
+            <div class="zh">
+                <h2>执行：安装 cilikube Chart</h2>
+                <p>
+                    运行以下命令以接入系统并部署 <code>cilikube</code> Chart：
+                </p>
+                <pre><code># 添加希里安 Charts 仓库
+helm repo add ciliverse https://charts.cillian.website
+
+# 更新 Helm 仓库
+helm repo update
+
+# 安装 cilikube Chart
+helm install cilikube ciliverse/cilikube --namespace cilikube --create-namespace
+                </code></pre>
+            </div>
+        </div>
+
+        <div class="terminal">
+            <div class="en active">
+                <h2>Assets: Available Charts</h2>
+                <p>Access the following Chart in this repository:</p>
+                <ul>
+                    <li>
+                        <a href="/cilikube-0.1.0.tgz">cilikube-0.1.0.tgz</a> (Version: 0.1.0)
+                    </li>
+                </ul>
+            </div>
+            <div class="zh">
+                <h2>资产：可用 Chart</h2>
+                <p>访问此仓库中的以下 Chart：</p>
+                <ul>
+                    <li>
+                        <a href="/cilikube-0.1.0.tgz">cilikube-0.1.0.tgz</a>（版本：0.1.0）
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="terminal">
+            <div class="en active">
+                <h2>Mission: Join the Ciliverse</h2>
+                <p>
+                    The meaning of life may be elusive, but diving into a passion project with like-minded creators is the ultimate way to thrive! CiliKube is a love-driven open-source endeavor, fueled by community support. If CiliKube sparks your interest, drop a <span class="star">Star ⭐</span> to cheer us on! Follow <strong>Ciliverse (cilliantech)</strong> on social platforms for the latest CiliKube updates and Kubernetes knowledge bombs!
+                </p>
+            </div>
+            <div class="zh">
+                <h2>任务：加入CILIKUBE开源社区</h2>
+                <p>
+                    生活的意义，也许一时难以看清，但能和一群志同道合的人，全情投入的做一些喜欢和热爱的事，这本身就是最有意义的活法！ CiliKube 是个纯爱发电项目，开源靠大家支持！如果觉得 CiliKube 有点意思，喜欢就点个 <span class="star">Star ⭐</span> 鼓励一下吧！关注 <strong>希里安（cilliantech）</strong> 公众号，随时 Get CiliKube 项目的最新动态和 K8s 学习干货！
+                </p>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p class="en active">© 2025 Cillian</p>
+        <p class="zh">© 2025 希里安</p>
+    </footer>
+
+    <script>
+        // Debounce utility
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Language toggle
+        const toggleLanguage = debounce(function() {
+            const enSections = document.querySelectorAll('.en');
+            const zhSections = document.querySelectorAll('.zh');
+            enSections.forEach(section => section.classList.toggle('active'));
+            zhSections.forEach(section => section.classList.toggle('active'));
+        }, 200);
+
+        // Banner control
+        const banner = document.getElementById('banner');
+        const header = document.getElementById('header');
+        function closeBanner() {
+            banner.classList.add('hidden');
+            localStorage.setItem('bannerDismissed', 'true');
+            header.classList.remove('with-banner');
+        }
+        if (localStorage.getItem('bannerDismissed') === 'true') {
+            banner.classList.add('hidden');
+            header.classList.remove('with-banner');
+        } else {
+            header.classList.add('with-banner');
+        }
+
+        // Matrix code rain
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d', { alpha: true });
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const fontSize = 14;
+        let columns = Math.floor(canvas.width / fontSize);
+        const drops = [];
+
+        for (let x = 0; x < columns; x++) {
+            drops[x] = Math.random() * canvas.height / fontSize;
+        }
+
+        function draw() {
+            ctx.fillStyle = 'rgba(10, 10, 10, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#00ff00';
+            ctx.font = fontSize + 'px Source Code Pro';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars.charAt(Math.floor(Math.random() * chars.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                drops[i]++;
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+            }
+        }
+
+        // Optimize for performance
+        const isMobile = window.innerWidth <= 600;
+        const drawInterval = isMobile ? 50 : 33;
+        let animationFrameId;
+
+        function animate() {
+            draw();
+            animationFrameId = requestAnimationFrame(animate);
+        }
+
+        // Start animation after content is loaded
+        window.addEventListener('load', () => {
+            canvas.classList.add('active');
+            animate();
+        });
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            columns = Math.floor(canvas.width / fontSize);
+            while (drops.length > columns) drops.pop();
+            while (drops.length < columns) drops.push(Math.random() * canvas.height / fontSize);
+        });
+    </script>
+</body>
+</html>
