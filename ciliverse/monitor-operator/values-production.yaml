@@ -1,0 +1,125 @@
+# Production values for monitor-operator
+# This is a YAML-formatted file for production deployment
+
+# Operator image configuration
+image:
+  repository: cilliantech/monitor-operator
+  tag: v1.0.0
+  pullPolicy: IfNotPresent
+
+# Image pull secrets for private registries
+imagePullSecrets: []
+
+# Namespace configuration
+namespace:
+  create: true
+  name: "monitor-system"
+
+# Service account configuration
+serviceAccount:
+  create: true
+  name: monitor-operator-controller-manager
+  annotations: {}
+
+# Deployment configuration
+deployment:
+  replicas: 2  # High availability
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  
+  # Security context
+  securityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+  
+  containerSecurityContext:
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - "ALL"
+  
+  # Health probes
+  livenessProbe:
+    httpGet:
+      path: /healthz
+      port: 8081
+    initialDelaySeconds: 15
+    periodSeconds: 20
+  
+  readinessProbe:
+    httpGet:
+      path: /readyz
+      port: 8081
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  
+  # Node affinity for production
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/arch
+            operator: In
+            values:
+              - amd64
+          - key: kubernetes.io/os
+            operator: In
+            values:
+              - linux
+
+# Metrics service configuration
+metrics:
+  enabled: true
+  service:
+    port: 8443
+    targetPort: 8443
+
+# RBAC configuration
+rbac:
+  create: true
+
+# Leader election configuration
+leaderElection:
+  enabled: true
+
+# Custom Resource Definitions
+crds:
+  install: true
+
+# Pod disruption budget for high availability
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# Tolerations for dedicated nodes
+tolerations:
+  - key: "monitoring"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"
+
+# Node selector for monitoring nodes
+nodeSelector:
+  node-role.kubernetes.io/monitoring: "true"
+
+# Pod annotations for monitoring
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8443"
+  prometheus.io/path: "/metrics"
+
+# Additional labels
+commonLabels:
+  environment: production
+  team: platform
+
+# Additional annotations
+commonAnnotations:
+  deployment.kubernetes.io/revision: "1"

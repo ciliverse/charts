@@ -1,0 +1,69 @@
+🎉 Monitor Operator 部署成功！
+
+📍 运行状态:
+   命名空间: {{ include "monitor-operator.namespace" . }}
+   副本数量: {{ .Values.deployment.replicas }}
+
+🔍 检查部署状态:
+   kubectl get deployment {{ include "monitor-operator.fullname" . }}-controller-manager -n {{ include "monitor-operator.namespace" . }}
+   kubectl get pods -l app.kubernetes.io/name=monitor-operator -n {{ include "monitor-operator.namespace" . }}
+
+📋 查看运行日志:
+   kubectl logs -f deployment/{{ include "monitor-operator.fullname" . }}-controller-manager -n {{ include "monitor-operator.namespace" . }}
+
+🚀 创建监控栈实例:
+   kubectl apply -f - <<EOF
+   apiVersion: monitoring.cillian.website/v1
+   kind: MonitorStack
+   metadata:
+     name: demo-monitor
+     namespace: default
+   spec:
+     prometheus:
+       enabled: true
+       retention: "15d"
+       service:
+         type: ClusterIP
+         port: 9090
+       resources:
+         requests:
+           cpu: 100m
+           memory: 256Mi
+     grafana:
+       enabled: true
+       adminPassword: "admin123"
+       service:
+         type: ClusterIP
+         port: 3000
+       resources:
+         requests:
+           cpu: 50m
+           memory: 128Mi
+   EOF
+
+📊 检查监控栈状态:
+   kubectl get monitorstacks -A
+   kubectl describe monitorstack demo-monitor
+
+🔧 健康检查:
+   kubectl port-forward service/{{ include "monitor-operator.fullname" . }}-controller-manager 8081:8081 -n {{ include "monitor-operator.namespace" . }}
+   curl http://localhost:8081/healthz
+
+{{- if .Values.metrics.enabled }}
+📈 访问 Metrics:
+   kubectl port-forward service/{{ include "monitor-operator.fullname" . }}-metrics {{ .Values.metrics.service.port }}:{{ .Values.metrics.service.port }} -n {{ include "monitor-operator.namespace" . }}
+   curl -k https://localhost:{{ .Values.metrics.service.port }}/metrics
+{{- end }}
+
+📚 更多信息:
+   - 项目主页: https://github.com/ciliverse/monitor-operator
+   - 文档: ./README.md
+   - 安装指南: ./INSTALL.md
+
+💡 快速访问监控服务:
+   # Prometheus (创建 MonitorStack 后)
+   kubectl port-forward service/demo-monitor-prometheus 9090:9090
+   
+   # Grafana (创建 MonitorStack 后)  
+   kubectl port-forward service/demo-monitor-grafana 3000:3000
+   # 默认登录: admin / admin123

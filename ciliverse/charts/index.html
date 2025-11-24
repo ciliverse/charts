@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: 'Source Code Pro', monospace, system-ui;
             background: #0a0a0a;
@@ -20,6 +22,7 @@
             scroll-behavior: smooth;
             will-change: scroll-position;
         }
+
         canvas#matrix {
             position: fixed;
             top: 0;
@@ -30,34 +33,39 @@
             opacity: 0.2;
             display: none;
         }
+
         canvas#matrix.active {
             display: block;
         }
+
         .grid {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(
-                to bottom,
-                rgba(0, 255, 0, 0.1) 1px,
-                transparent 1px
-            ),
-            linear-gradient(
-                to right,
-                rgba(0, 255, 0, 0.1) 1px,
-                transparent 1px
-            );
+            background: linear-gradient(to bottom,
+                    rgba(0, 255, 0, 0.1) 1px,
+                    transparent 1px),
+                linear-gradient(to right,
+                    rgba(0, 255, 0, 0.1) 1px,
+                    transparent 1px);
             background-size: 20px 20px;
             z-index: -1;
             animation: gridMove 20s linear infinite;
             will-change: background-position;
         }
+
         @keyframes gridMove {
-            0% { background-position: 0 0; }
-            100% { background-position: 20px 20px; }
+            0% {
+                background-position: 0 0;
+            }
+
+            100% {
+                background-position: 20px 20px;
+            }
         }
+
         .scanline {
             position: fixed;
             top: 0;
@@ -69,10 +77,17 @@
             z-index: 10;
             will-change: top;
         }
+
         @keyframes scan {
-            0% { top: 0; }
-            100% { top: 100%; }
+            0% {
+                top: 0;
+            }
+
+            100% {
+                top: 100%;
+            }
         }
+
         .banner {
             position: fixed;
             top: 0;
@@ -89,21 +104,26 @@
             font-size: 0.9rem;
             transition: transform 0.3s ease;
         }
+
         .banner.hidden {
             transform: translateY(-100%);
         }
+
         .banner p {
             margin: 0;
             color: #00cc00;
         }
+
         .banner a {
             color: #00ffcc;
             text-decoration: none;
         }
+
         .banner a:hover {
             color: #00ff00;
             text-decoration: underline;
         }
+
         .banner .close-btn {
             background: none;
             border: none;
@@ -113,9 +133,11 @@
             padding: 0 0.5rem;
             transition: color 0.2s ease;
         }
+
         .banner .close-btn:hover {
             color: #00ffcc;
         }
+
         header {
             background: rgba(0, 0, 0, 0.9);
             text-align: center;
@@ -124,9 +146,11 @@
             position: relative;
             z-index: 5;
         }
+
         header.with-banner {
             margin-top: 3rem;
         }
+
         header h1 {
             font-size: 2.5rem;
             color: #00ff00;
@@ -136,11 +160,13 @@
             border-right: 2px solid #00ff00;
             animation: blink 0.7s step-end infinite;
         }
+
         header p {
             font-size: 1.1rem;
             color: #00cc00;
             margin-top: 0.5rem;
         }
+
         .container {
             max-width: 900px;
             margin: 2rem auto;
@@ -148,6 +174,7 @@
             position: relative;
             z-index: 5;
         }
+
         .terminal {
             background: #1a1a1a;
             border: 2px solid #00ff00;
@@ -158,10 +185,12 @@
             box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
             transition: box-shadow 0.2s ease, transform 0.2s ease;
         }
+
         .terminal:hover {
             box-shadow: 0 0 25px rgba(0, 255, 0, 0.5);
             transform: translateY(-3px);
         }
+
         .terminal::before {
             content: '>_';
             color: #00ff00;
@@ -170,6 +199,7 @@
             top: 1rem;
             animation: blink 0.7s step-end infinite;
         }
+
         .terminal::after {
             content: '';
             position: absolute;
@@ -183,20 +213,24 @@
             transition: opacity 0.2s ease;
             z-index: -1;
         }
+
         .terminal:hover::after {
             opacity: 1;
         }
+
         h2 {
             font-size: 1.6rem;
             color: #00ff00;
             margin-bottom: 1rem;
             text-transform: uppercase;
         }
+
         p {
             font-size: 1rem;
             color: #00cc00;
             margin-bottom: 1rem;
         }
+
         pre {
             background: #0a0a0a;
             color: #00ff00;
@@ -207,6 +241,7 @@
             border-left: 4px solid #00ff00;
             position: relative;
         }
+
         pre::before {
             content: '';
             position: absolute;
@@ -217,31 +252,45 @@
             background: linear-gradient(to right, rgba(0, 255, 0, 0.1), transparent);
             animation: codeGlow 2s ease-in-out infinite;
         }
+
         @keyframes codeGlow {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
         }
+
         code {
             color: #00ff00;
         }
+
         ul {
             list-style: none;
             padding: 0;
         }
+
         li {
             font-size: 1rem;
             margin: 0.5rem 0;
             color: #00cc00;
         }
+
         a {
             color: #00ffcc;
             text-decoration: none;
             transition: color 0.2s ease;
         }
+
         a:hover {
             color: #00ff00;
             text-decoration: underline;
         }
+
         .lang-toggle {
             position: fixed;
             top: 6rem;
@@ -263,19 +312,26 @@
             align-items: center;
             justify-content: center;
         }
-        .lang-toggle:hover, .lang-toggle:active {
+
+        .lang-toggle:hover,
+        .lang-toggle:active {
             box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
             background: #00ff00;
             color: #0a0a0a;
         }
-        .en, .zh {
+
+        .en,
+        .zh {
             display: none;
             transition: opacity 0.3s ease;
         }
-        .en.active, .zh.active {
+
+        .en.active,
+        .zh.active {
             display: block;
             opacity: 1;
         }
+
         footer {
             text-align: center;
             padding: 1rem 0;
@@ -286,57 +342,80 @@
             position: relative;
             z-index: 5;
         }
+
         .star {
             color: #ffcc00;
             font-size: 1.2rem;
         }
+
         @keyframes blink {
-            50% { border-color: transparent; }
+            50% {
+                border-color: transparent;
+            }
         }
+
         @keyframes scan {
-            0% { top: 0; }
-            100% { top: 100%; }
+            0% {
+                top: 0;
+            }
+
+            100% {
+                top: 100%;
+            }
         }
+
         @media (max-width: 600px) {
             .banner {
                 font-size: 0.8rem;
                 padding: 0.6rem 0.8rem;
             }
+
             .banner .close-btn {
                 font-size: 0.9rem;
             }
+
             header {
                 padding: 1.5rem 0.8rem;
             }
+
             header.with-banner {
                 margin-top: 2.5rem;
             }
+
             header h1 {
                 font-size: 1.8rem;
             }
+
             header p {
                 font-size: 0.9rem;
             }
+
             .container {
                 margin: 1rem;
                 padding: 0 1rem;
             }
+
             .terminal {
                 padding: 1.2rem;
             }
+
             h2 {
                 font-size: 1.3rem;
             }
+
             p {
                 font-size: 0.9rem;
             }
+
             pre {
                 font-size: 0.8rem;
                 padding: 1rem;
             }
+
             li {
                 font-size: 0.9rem;
             }
+
             .lang-toggle {
                 padding: 0.4rem 0.8rem;
                 font-size: 0.8rem;
@@ -345,42 +424,54 @@
                 min-width: 44px;
                 min-height: 44px;
             }
+
             .grid {
                 background-size: 15px 15px;
             }
         }
+
         @media (max-width: 400px) {
             .banner {
                 font-size: 0.7rem;
                 padding: 0.5rem 0.6rem;
             }
+
             .banner .close-btn {
                 font-size: 0.8rem;
             }
+
             header {
                 padding: 1.2rem 0.6rem;
             }
+
             header.with-banner {
                 margin-top: 2rem;
             }
+
             header h1 {
                 font-size: 1.5rem;
             }
+
             header p {
                 font-size: 0.8rem;
             }
+
             .terminal {
                 padding: 1rem;
             }
+
             h2 {
                 font-size: 1.2rem;
             }
+
             p {
                 font-size: 0.85rem;
             }
+
             pre {
                 font-size: 0.75rem;
             }
+
             .lang-toggle {
                 font-size: 0.7rem;
                 padding: 0.3rem 0.6rem;
@@ -389,15 +480,19 @@
             }
         }
     </style>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap"
+        media="print" onload="this.media='all'">
 </head>
+
 <body>
     <div class="banner" id="banner">
         <p class="en active">
-            🔔 Latest Update: CILIKUBE v0.1.1 Released 🎉 Thanks to all contributors for their amazing work in just a few days! Details: <a href="https://github.com/ciliverse/cilikube/releases/tag/v0.1.1">v0.1.1 Release</a>
+            🔔 Latest Update: CILIKUBE v0.1.1 Released 🎉 Thanks to all contributors for their amazing work in just a
+            few days! Details: <a href="https://github.com/ciliverse/cilikube/releases/tag/v0.1.1">v0.1.1 Release</a>
         </p>
         <p class="zh">
-            🔔 最新动态：CILIKUBE v0.1.1 版本发布 🎉 感谢各位小伙伴的贡献，短短几天贡献很多！详情： <a href="https://github.com/ciliverse/cilikube/releases/tag/v0.1.1">v0.1.1 版本</a>
+            🔔 最新动态：CILIKUBE v0.1.1 版本发布 🎉 感谢各位小伙伴的贡献，短短几天贡献很多！详情： <a
+                href="https://github.com/ciliverse/cilikube/releases/tag/v0.1.1">v0.1.1 版本</a>
         </p>
         <button class="close-btn" onclick="closeBanner()">×</button>
     </div>
@@ -414,15 +509,21 @@
             <div class="en active">
                 <h2>System Access: Ciliverse Charts</h2>
                 <p>
-                    Welcome to the Ciliverse Helm Charts Repository, a secure node for deploying cutting-edge applications on Kubernetes.
+                    Welcome to the Ciliverse Helm Charts Repository, a secure node for deploying cutting-edge
+                    applications on Kubernetes.
                     The <strong>cilikube</strong> Chart is your key to unlocking rapid deployment.
                 </p>
                 <h3>📌 Core Project Links</h3>
                 <ul>
                     <li>Backend: <a href="https://github.com/ciliverse/cilikube">github.com/ciliverse/cilikube</a></li>
-                    <li>Frontend: <a href="https://github.com/cilliantech/cilikube-web">github.com/cilliantech/cilikube-web</a></li>
-                    <li>Documentation: <a href="https://cilikube.cillian.website/zh/">cilikube.cillian.website/zh/</a></li>
-                    <li>Docs Repo: <a href="https://github.com/ciliverse/cilikube-docs">github.com/ciliverse/cilikube-docs</a> (Contributions Welcome!)</li>
+                    <li>Frontend: <a
+                            href="https://github.com/cilliantech/cilikube-web">github.com/cilliantech/cilikube-web</a>
+                    </li>
+                    <li>Documentation: <a href="https://cilikube.cillian.website/zh/">cilikube.cillian.website/zh/</a>
+                    </li>
+                    <li>Docs Repo: <a
+                            href="https://github.com/ciliverse/cilikube-docs">github.com/ciliverse/cilikube-docs</a>
+                        (Contributions Welcome!)</li>
                 </ul>
             </div>
             <div class="zh">
@@ -434,18 +535,22 @@
                 <h3>📌 项目核心地址</h3>
                 <ul>
                     <li>后端： <a href="https://github.com/ciliverse/cilikube">github.com/ciliverse/cilikube</a></li>
-                    <li>前端： <a href="https://github.com/cilliantech/cilikube-web">github.com/cilliantech/cilikube-web</a></li>
+                    <li>前端： <a
+                            href="https://github.com/cilliantech/cilikube-web">github.com/cilliantech/cilikube-web</a>
+                    </li>
                     <li>文档： <a href="https://cilikube.cillian.website/zh/">cilikube.cillian.website/zh/</a></li>
-                    <li>文档仓库： <a href="https://github.com/ciliverse/cilikube-docs">github.com/ciliverse/cilikube-docs</a>（欢迎贡献完善！）</li>
+                    <li>文档仓库： <a
+                            href="https://github.com/ciliverse/cilikube-docs">github.com/ciliverse/cilikube-docs</a>（欢迎贡献完善！）
+                    </li>
                 </ul>
             </div>
         </div>
 
         <div class="terminal">
             <div class="en active">
-                <h2>Execute: Install cilikube Chart</h2>
+                <h2>Execute: Install Charts</h2>
                 <p>
-                    Run the following commands to infiltrate the system and deploy the <code>cilikube</code> Chart:
+                    Run the following commands to add the repository and deploy Charts:
                 </p>
                 <pre><code># Add the Ciliverse Charts repository
 helm repo add ciliverse https://charts.cillian.website
@@ -455,12 +560,15 @@ helm repo update
 
 # Install the cilikube Chart
 helm install cilikube ciliverse/cilikube --namespace cilikube --create-namespace
+
+# Install the monitor-operator Chart
+helm install monitor-operator ciliverse/monitor-operator --namespace monitoring --create-namespace
                 </code></pre>
             </div>
             <div class="zh">
-                <h2>执行：安装 cilikube Chart</h2>
+                <h2>执行：安装 Charts</h2>
                 <p>
-                    运行以下命令以接入系统并部署 <code>cilikube</code> Chart：
+                    运行以下命令以添加仓库并部署 Charts：
                 </p>
                 <pre><code># 添加希里安 Charts 仓库
 helm repo add ciliverse https://charts.cillian.website
@@ -470,17 +578,24 @@ helm repo update
 
 # 安装 cilikube Chart
 helm install cilikube ciliverse/cilikube --namespace cilikube --create-namespace
+
+# 安装 monitor-operator Chart
+helm install monitor-operator ciliverse/monitor-operator --namespace monitoring --create-namespace
                 </code></pre>
             </div>
         </div>
 
         <div class="terminal">
+            <!-- CHARTS_LIST_START -->
             <div class="en active">
                 <h2>Assets: Available Charts</h2>
-                <p>Access the following Chart in this repository:</p>
+                <p>Access the following Charts in this repository:</p>
                 <ul>
                     <li>
-                        <a href="/cilikube-0.1.0.tgz">cilikube-0.1.0.tgz</a> (Version: 0.1.0)
+                        <a href="/cilikube-0.1.0.tgz">cilikube-0.1.0.tgz</a> (Version: 0.1.0) - A Helm chart for deploying the Cilikube frontend and backend application
+                    </li>
+                    <li>
+                        <a href="/monitor-operator-0.1.0.tgz">monitor-operator-0.1.0.tgz</a> (Version: 0.1.0) - A Helm chart for Monitor Operator - Kubernetes monitoring stack management
                     </li>
                 </ul>
             </div>
@@ -489,23 +604,33 @@ helm install cilikube ciliverse/cilikube --namespace cilikube --create-namespace
                 <p>访问此仓库中的以下 Chart：</p>
                 <ul>
                     <li>
-                        <a href="/cilikube-0.1.0.tgz">cilikube-0.1.0.tgz</a>（版本：0.1.0）
+                        <a href="/cilikube-0.1.0.tgz">cilikube-0.1.0.tgz</a>（版本：0.1.0） - A Helm chart for deploying the Cilikube frontend and backend application
+                    </li>
+                    <li>
+                        <a href="/monitor-operator-0.1.0.tgz">monitor-operator-0.1.0.tgz</a>（版本：0.1.0） - A Helm chart for Monitor Operator - Kubernetes monitoring stack management
                     </li>
                 </ul>
             </div>
+            <!-- CHARTS_LIST_END -->
         </div>
 
         <div class="terminal">
             <div class="en active">
                 <h2>Mission: Join the Ciliverse</h2>
                 <p>
-                    The meaning of life may be elusive, but diving into a passion project with like-minded creators is the ultimate way to thrive! CiliKube is a love-driven open-source endeavor, fueled by community support. If CiliKube sparks your interest, drop a <span class="star">Star ⭐</span> to cheer us on! Follow <strong>Ciliverse (cilliantech)</strong> on social platforms for the latest CiliKube updates and Kubernetes knowledge bombs!
+                    The meaning of life may be elusive, but diving into a passion project with like-minded creators is
+                    the ultimate way to thrive! CiliKube is a love-driven open-source endeavor, fueled by community
+                    support. If CiliKube sparks your interest, drop a <span class="star">Star ⭐</span> to cheer us on!
+                    Follow <strong>Ciliverse (cilliantech)</strong> on social platforms for the latest CiliKube updates
+                    and Kubernetes knowledge bombs!
                 </p>
             </div>
             <div class="zh">
                 <h2>任务：加入CILIKUBE开源社区</h2>
                 <p>
-                    生活的意义，也许一时难以看清，但能和一群志同道合的人，全情投入的做一些喜欢和热爱的事，这本身就是最有意义的活法！ CiliKube 是个纯爱发电项目，开源靠大家支持！如果觉得 CiliKube 有点意思，喜欢就点个 <span class="star">Star ⭐</span> 鼓励一下吧！关注 <strong>希里安（cilliantech）</strong> 公众号，随时 Get CiliKube 项目的最新动态和 K8s 学习干货！
+                    生活的意义，也许一时难以看清，但能和一群志同道合的人，全情投入的做一些喜欢和热爱的事，这本身就是最有意义的活法！ CiliKube 是个纯爱发电项目，开源靠大家支持！如果觉得 CiliKube
+                    有点意思，喜欢就点个 <span class="star">Star ⭐</span> 鼓励一下吧！关注 <strong>希里安（cilliantech）</strong> 公众号，随时 Get
+                    CiliKube 项目的最新动态和 K8s 学习干货！
                 </p>
             </div>
         </div>
@@ -530,7 +655,7 @@ helm install cilikube ciliverse/cilikube --namespace cilikube --create-namespace
         }
 
         // Language toggle
-        const toggleLanguage = debounce(function() {
+        const toggleLanguage = debounce(function () {
             const enSections = document.querySelectorAll('.en');
             const zhSections = document.querySelectorAll('.zh');
             enSections.forEach(section => section.classList.toggle('active'));
@@ -608,4 +733,5 @@ helm install cilikube ciliverse/cilikube --namespace cilikube --create-namespace
         });
     </script>
 </body>
+
 </html>

@@ -1,0 +1,123 @@
+# Default values for monitor-operator.
+# This is a YAML-formatted file.
+# Declare variables to be substituted into your templates.
+
+# Operator image configuration
+image:
+  repository: cilliantech/monitor-operator
+  tag: v1.0.0
+  pullPolicy: IfNotPresent
+
+# Image pull secrets for private registries
+imagePullSecrets: []
+
+# Namespace configuration
+namespace:
+  create: true
+  name: ""  # 如果为空，使用 Release.Namespace
+
+# Service account configuration
+serviceAccount:
+  create: true
+  name: monitor-operator-controller-manager
+  annotations: {}
+
+# Deployment configuration
+deployment:
+  replicas: 1
+  resources:
+    limits:
+      cpu: 500m
+      memory: 128Mi
+    requests:
+      cpu: 10m
+      memory: 64Mi
+  
+  # Security context
+  securityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+  
+  containerSecurityContext:
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - "ALL"
+  
+  # Health probes
+  livenessProbe:
+    httpGet:
+      path: /healthz
+      port: 8081
+    initialDelaySeconds: 15
+    periodSeconds: 20
+  
+  readinessProbe:
+    httpGet:
+      path: /readyz
+      port: 8081
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  
+  # Node affinity (uncomment if needed)
+  # nodeAffinity:
+  #   requiredDuringSchedulingIgnoredDuringExecution:
+  #     nodeSelectorTerms:
+  #       - matchExpressions:
+  #         - key: kubernetes.io/arch
+  #           operator: In
+  #           values:
+  #             - amd64
+  #             - arm64
+  #             - ppc64le
+  #             - s390x
+  #         - key: kubernetes.io/os
+  #           operator: In
+  #           values:
+  #             - linux
+
+# Metrics service configuration
+metrics:
+  enabled: true
+  service:
+    port: 8443
+    targetPort: 8443
+
+# RBAC configuration
+rbac:
+  create: true
+
+# Leader election configuration
+leaderElection:
+  enabled: true
+
+# Custom Resource Definitions
+crds:
+  install: true
+
+# Additional labels to add to all resources
+commonLabels: {}
+
+# Additional annotations to add to all resources
+commonAnnotations: {}
+
+# Pod disruption budget
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+  # maxUnavailable: 1
+
+# Tolerations for pod assignment
+tolerations: []
+
+# Node selector for pod assignment
+nodeSelector: {}
+
+# Pod annotations
+podAnnotations: {}
+
+# Pod security context
+podSecurityContext:
+  fsGroup: 65532

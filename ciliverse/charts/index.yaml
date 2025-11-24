@@ -3,12 +3,37 @@ entries:
   cilikube:
   - apiVersion: v2
     appVersion: v0.1.0
-    created: "2025-05-09T07:49:52.649875387Z"
+    created: "2025-11-24T09:10:10.573176125Z"
     description: A Helm chart for deploying the Cilikube frontend and backend application
-    digest: 01212fa338aac0b275be5ec0989a409a7f326a00c3ca313e85d43aa4db84ef82
+    digest: 5cf93724871f88c67a14b89e4282450b3b787e039b684a2f1c5d4480d9a07296
     name: cilikube
     type: application
     urls:
     - https://charts.cillian.website/cilikube-0.1.0.tgz
     version: 0.1.0
-generated: "2025-05-09T07:49:52.649210337Z"
+  monitor-operator:
+  - apiVersion: v2
+    appVersion: v1.0.0
+    created: "2025-11-24T09:10:10.574272369Z"
+    description: A Helm chart for Monitor Operator - Kubernetes monitoring stack management
+    digest: a4a284cf02c137eb2c656c49886a9b1dd6814356c241af2967598cc72ca49f92
+    home: https://github.com/ciliverse/monitor-operator
+    icon: https://raw.githubusercontent.com/prometheus/prometheus/main/web/ui/static/img/prometheus_logo.svg
+    keywords:
+    - monitoring
+    - prometheus
+    - grafana
+    - operator
+    - kubernetes
+    maintainers:
+    - email: cilliantech@gmail.com
+      name: cilliantech
+      url: https://cillian.website
+    name: monitor-operator
+    sources:
+    - https://github.com/ciliverse/monitor-operator
+    type: application
+    urls:
+    - https://charts.cillian.website/monitor-operator-0.1.0.tgz
+    version: 0.1.0
+generated: "2025-11-24T09:10:10.572308841Z"
